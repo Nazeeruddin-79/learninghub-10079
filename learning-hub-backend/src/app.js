@@ -1,0 +1,7 @@
+const express=require('express'),cors=require('cors'),helmet=require('helmet'),morgan=require('morgan'),{clientOrigins,nodeEnv}=require('./config/env');
+const app=express();app.disable('x-powered-by');app.use(helmet({crossOriginResourcePolicy:{policy:'cross-origin'}}));
+app.use(cors({origin(origin,cb){if(!origin||clientOrigins.includes(origin))return cb(null,true);return cb(new Error('Origin is not allowed by API CORS policy.'));},methods:['GET','POST','PATCH','PUT','DELETE','OPTIONS'],allowedHeaders:['Content-Type','Authorization','Range'],exposedHeaders:['Accept-Ranges','Content-Length','Content-Range'],credentials:false}));
+app.use(express.json({limit:'1mb'}));app.use(express.urlencoded({extended:true,limit:'1mb'}));if(nodeEnv!=='test')app.use(morgan(nodeEnv==='production'?'combined':'dev'));
+app.get('/api/health',(_req,res)=>res.json({success:true,message:'Learning Hub API is running.',timestamp:new Date().toISOString()}));
+app.use('/api/auth',require('./routes/authRoutes'));app.use('/api/courses',require('./routes/courseRoutes'));app.use('/api/lessons',require('./routes/lessonRoutes'));app.use('/api/quizzes',require('./routes/quizRoutes'));app.use('/api/student',require('./routes/studentRoutes'));app.use('/api/instructor',require('./routes/instructorRoutes'));
+const errors=require('./middleware/errorHandler');app.use(errors.notFound);app.use(errors.errorHandler);module.exports=app;

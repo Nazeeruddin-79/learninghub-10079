@@ -1,0 +1,1 @@
+node_modules/\n.env\nuploads/videos/*\n!uploads/videos/.gitkeep\ncoverage/\n.DS_Store\nnpm-debug.log*\n

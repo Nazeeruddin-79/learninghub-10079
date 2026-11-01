@@ -1,0 +1,14 @@
+const r=require('express').Router();
+const c=require('../controllers/lessonController');
+const {protect,allowRoles}=require('../middleware/auth');
+const {videoChunkUpload}=require('../middleware/upload');
+const asyncHandler=require('../utils/asyncHandler');
+r.post('/course/:courseId/upload/start',protect,allowRoles('instructor'),asyncHandler(c.startUpload));
+r.post('/upload/:uploadId/chunk',protect,allowRoles('instructor'),videoChunkUpload,asyncHandler(c.uploadChunk));
+r.post('/upload/:uploadId/finish',protect,allowRoles('instructor'),asyncHandler(c.finishUpload));
+r.delete('/upload/:uploadId',protect,allowRoles('instructor'),asyncHandler(c.cancelUpload));
+r.post('/course/:courseId',protect,allowRoles('instructor'),asyncHandler(c.create));
+r.get('/:lessonId',protect,asyncHandler(c.get));r.get('/:lessonId/video',protect,asyncHandler(c.stream));
+r.post('/:lessonId/complete',protect,allowRoles('student'),asyncHandler(c.complete));
+r.patch('/:lessonId',protect,allowRoles('instructor'),asyncHandler(c.update));r.delete('/:lessonId',protect,allowRoles('instructor'),asyncHandler(c.remove));
+module.exports=r;

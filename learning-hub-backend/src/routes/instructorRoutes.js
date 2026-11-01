@@ -1,0 +1,1 @@
+const r=require('express').Router(),{protect,allowRoles}=require('../middleware/auth'),c=require('../controllers/instructorController'),asyncHandler=require('../utils/asyncHandler');r.use(protect,allowRoles('instructor'));r.get('/dashboard',asyncHandler(c.dashboard));r.get('/students',asyncHandler(c.students));module.exports=r;

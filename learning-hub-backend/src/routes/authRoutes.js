@@ -1,0 +1,3 @@
+const r=require('express').Router(),rateLimit=require('express-rate-limit'),c=require('../controllers/authController'),{protect}=require('../middleware/auth'),validate=require('../middleware/validate'),asyncHandler=require('../utils/asyncHandler');
+const limiter=rateLimit({windowMs:15*60*1000,limit:30,standardHeaders:'draft-7',legacyHeaders:false,message:{success:false,message:'Too many sign-in attempts. Try again later.'}});
+r.post('/register',limiter,validate(c.registerSchema),asyncHandler(c.register));r.post('/login',limiter,validate(c.loginSchema),asyncHandler(c.login));r.get('/me',protect,asyncHandler(c.me));module.exports=r;
